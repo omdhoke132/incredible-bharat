@@ -208,7 +208,7 @@ function StateExplorer() {
                     .slice(0, 8)
                     .map((item) => (
                       <CultureItem
-                        key={`${category.key}-${item.stateId}-${item.id}`}
+                        key={`${activeCategory}-${item.stateId}-${item.id}`}
                         item={item}
                         category={activeCategory}
                       />

@@ -117,7 +117,7 @@ async function loadStates() {
 
 function getTerms(question) {
   return [...new Set(
-    question.toLocaleLowerCase().match(/[a-z0-9\u0900-\u097f]+/g) || []
+    question.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) || []
   )].filter((term) => term.length > 2 && !STOP_WORDS.has(term));
 }
 
@@ -178,7 +178,11 @@ async function retrieveCulture(question) {
   }
 
   records.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-  const selected = records.slice(0, 6).map(({ score, ...item }) => item);
+  const selected = records.slice(0, 6).map((entry) => {
+    const item = { ...entry };
+    delete item.score;
+    return item;
+  });
   const matchedStates = new Set(selected.map((item) => item.state));
   const sources = [];
   const seenUrls = new Set();
@@ -278,7 +282,8 @@ app.use((req, res) => {
   res.status(404).json({ success: false, error: "API route not found." });
 });
 
-app.use((error, _req, res, _next) => {
+app.use((error, _req, res, next) => {
+  void next;
   if (error?.type === "entity.too.large") {
     return res.status(413).json({ success: false, error: "The request is too large." });
   }
