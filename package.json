@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "start:server": "node server/server.cjs",
     "test": "node --test tests/*.test.js",
+    "db:export-seed": "node scripts/export-sql-seed.js",
     "check": "npm run lint && npm test && npm run build"
   },
   "dependencies": {
