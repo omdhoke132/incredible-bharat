@@ -1,8 +1,10 @@
 ﻿import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import {
   getHeritageById,
-  getRelatedContent
+  getRelatedContent,
+  getStateSources
 } from "../services/cultureService";
 
 function HeritageDetail() {
@@ -37,6 +39,7 @@ function HeritageDetail() {
             </Link>
           </div>
         </main>
+        <Footer />
       </>
     );
   }
@@ -139,6 +142,27 @@ function HeritageDetail() {
             </aside>
           </section>
 
+
+          {getStateSources(heritage.stateId || heritage.state).length > 0 && (
+            <section className="heritage-sources">
+              <p className="eyebrow">RESEARCH STARTING POINTS</p>
+              <h2>References for {heritage.state}</h2>
+              <p className="culture-reference-note">
+                These are regional references supplied with the state collection. They are useful starting points, but are not guaranteed to substantiate every statement about this site; item-specific citations should be added during editorial review.
+              </p>
+              <ul className="culture-source-list">
+                {getStateSources(heritage.stateId || heritage.state).map((source) => (
+                  <li key={source.url}>
+                    <a href={source.url} target="_blank" rel="noopener noreferrer">
+                      {source.title} <span aria-hidden="true">↗</span>
+                    </a>
+                    {source.type && <small>{source.type}</small>}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           {related && (
             <section className="heritage-related">
               <div className="heritage-related-heading">
@@ -208,6 +232,7 @@ function HeritageDetail() {
           )}
         </div>
       </main>
+      <Footer />
     </>
   );
 }

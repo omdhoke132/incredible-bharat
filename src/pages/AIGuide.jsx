@@ -4,6 +4,8 @@ import ReactMarkdown from "react-markdown";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
+
 const suggestions = [
   "Tell me about Maharashtra's cultural heritage",
   "Which Indian festivals should I explore?",
@@ -14,12 +16,16 @@ const suggestions = [
 function AIGuide() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+  const [sources, setSources] = useState([]);
+  const [matchedEntries, setMatchedEntries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSuggestion = (text) => {
     setQuestion(text);
     setAnswer("");
+    setSources([]);
+    setMatchedEntries([]);
     setError("");
   };
 
@@ -33,10 +39,12 @@ function AIGuide() {
 
     setLoading(true);
     setAnswer("");
+    setSources([]);
+    setMatchedEntries([]);
     setError("");
 
     try {
-      const response = await fetch("http://localhost:3001/api/ask-guide", {
+      const response = await fetch(`${API_BASE_URL}/api/ask-guide`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -53,6 +61,8 @@ function AIGuide() {
       }
 
       setAnswer(data.answer);
+      setSources(Array.isArray(data.sources) ? data.sources : []);
+      setMatchedEntries(Array.isArray(data.matchedEntries) ? data.matchedEntries : []);
     } catch (err) {
       console.error("AI Guide request failed:", err);
 
@@ -102,7 +112,7 @@ function AIGuide() {
 
             <span className="ai-status">
               <i></i>
-              {loading ? "THINKING..." : "GUIDE READY"}
+              {loading ? "THINKING..." : "READY FOR YOUR QUESTION"}
             </span>
           </div>
 
@@ -121,6 +131,8 @@ function AIGuide() {
               }}
               placeholder="Ask something about India's culture..."
               rows="4"
+              maxLength={1000}
+              aria-label="Ask a question about Indian cultural heritage"
               disabled={loading}
             />
 
@@ -155,6 +167,36 @@ function AIGuide() {
                 <ReactMarkdown>{answer}</ReactMarkdown>
               </div>
             </div>
+          )}
+
+          {answer && matchedEntries.length > 0 && (
+            <section className="ai-source-panel" aria-label="Collection entries used">
+              <span className="ai-panel-label">COLLECTION CONTEXT</span>
+              <p>The guide found these entries in the current curated collection. Match quality and completeness can vary.</p>
+              <ul>
+                {matchedEntries.map((entry) => (
+                  <li key={entry.state + "-" + entry.category + "-" + entry.name}>
+                    <strong>{entry.name}</strong>
+                    <span>{entry.category} · {entry.state}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {answer && sources.length > 0 && (
+            <section className="ai-source-panel" aria-label="Regional reference links">
+              <span className="ai-panel-label">REGIONAL REFERENCE LINKS</span>
+              <p>These are regional research starting points, not guaranteed item-level citations for every sentence in the answer.</p>
+              <ul>
+                {sources.map((source) => (
+                  <li key={source.url}>
+                    <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title} ↗</a>
+                    <span>{source.state}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
 
           <div className="ai-suggestions">
