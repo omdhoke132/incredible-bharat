@@ -69,6 +69,12 @@ function HeritageDetail() {
                 {heritage.description}
               </p>
 
+              {heritage.descriptionStatus === "needs-curation" && (
+                <p className="content-review-note" role="note">
+                  This entry is listed in the collection, but its description needs editorial verification.
+                </p>
+              )}
+
               <div className="heritage-detail-tags">
                 {heritage.state && (
                   <span>{heritage.state}</span>

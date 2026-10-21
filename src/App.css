@@ -5240,3 +5240,46 @@ body{background:#fff8ee;color:#281c18}.navbar{background:rgba(255,248,238,.94)}.
     width: 100%;
   }
 }
+
+
+/* Honest editorial and connection-status indicators */
+.content-review-note {
+  display: block;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-left: 3px solid #bd8c58;
+  border-radius: 5px;
+  background: #fff4e3;
+  color: #715a42;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.ai-status-unconfigured i {
+  background: #bd7d2a;
+  box-shadow: 0 0 0 5px rgba(189, 125, 42, 0.12);
+  animation: none;
+}
+
+.ai-status-unavailable i {
+  background: #b54736;
+  box-shadow: 0 0 0 5px rgba(181, 71, 54, 0.12);
+  animation: none;
+}
+
+.ai-status-checking i {
+  background: #9b8a7b;
+  box-shadow: 0 0 0 5px rgba(155, 138, 123, 0.12);
+  animation: none;
+}
+
+.ai-connection-message {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-left: 3px solid #bd8c58;
+  border-radius: 8px;
+  background: #fff4e3;
+  color: #715a42;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}

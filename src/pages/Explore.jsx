@@ -466,6 +466,10 @@ function CultureCard({
 
         <p>{item.description}</p>
 
+        {item.descriptionStatus === "needs-curation" && (
+          <small className="content-review-note">Description under editorial review</small>
+        )}
+
         {tertiary && (
           <div className="heritage-tags">
             <span>{tertiary}</span>

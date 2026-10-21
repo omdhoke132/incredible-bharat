@@ -28,6 +28,10 @@ function HeritageCard({ heritage }) {
 
         <p>{heritage.description}</p>
 
+        {heritage.descriptionStatus === "needs-curation" && (
+          <small className="content-review-note">Description under editorial review</small>
+        )}
+
         <div className="heritage-tags">
           {(heritage.tags || []).slice(0, 3).map((tag) => (
             <span key={tag}>{tag}</span>

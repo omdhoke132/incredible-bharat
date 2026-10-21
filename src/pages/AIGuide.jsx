@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import Navbar from "../components/Navbar";
@@ -20,6 +20,34 @@ function AIGuide() {
   const [matchedEntries, setMatchedEntries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [apiStatus, setApiStatus] = useState("checking");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 5000);
+    let active = true;
+
+    fetch(`${API_BASE_URL}/api/health`, { signal: controller.signal })
+      .then(async (response) => {
+        const payload = await response.json().catch(() => null);
+        if (!response.ok || !payload?.success) {
+          throw new Error("AI health check failed");
+        }
+        if (active) {
+          setApiStatus(payload.aiConfigured ? "ready" : "unconfigured");
+        }
+      })
+      .catch(() => {
+        if (active) setApiStatus("unavailable");
+      })
+      .finally(() => window.clearTimeout(timeoutId));
+
+    return () => {
+      active = false;
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, []);
 
   const handleSuggestion = (text) => {
     setQuestion(text);
@@ -131,11 +159,31 @@ function AIGuide() {
               <h2>What would you like to discover?</h2>
             </div>
 
-            <span className="ai-status" role="status" aria-live="polite">
+            <span className={`ai-status ai-status-${apiStatus}`} role="status" aria-live="polite">
               <i></i>
-              {loading ? "THINKING..." : "READY FOR YOUR QUESTION"}
+              {loading
+                ? "THINKING..."
+                : apiStatus === "ready"
+                  ? "GUIDE READY"
+                  : apiStatus === "unconfigured"
+                    ? "SETUP NEEDED"
+                    : apiStatus === "unavailable"
+                      ? "GUIDE OFFLINE"
+                      : "CHECKING CONNECTION..."}
             </span>
           </div>
+
+          {apiStatus === "unconfigured" && (
+            <p className="ai-connection-message" role="status">
+              The AI service is reachable, but its API key is not configured. You can still explore the cultural collection below.
+            </p>
+          )}
+
+          {apiStatus === "unavailable" && (
+            <p className="ai-connection-message" role="status">
+              We couldn't reach the AI service. The cultural collection remains available while the connection is checked by the project team.
+            </p>
+          )}
 
           <div className="ai-input-wrap">
             <textarea
