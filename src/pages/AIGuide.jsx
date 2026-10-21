@@ -43,6 +43,9 @@ function AIGuide() {
     setMatchedEntries([]);
     setError("");
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 45000);
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/ask-guide`, {
         method: "POST",
@@ -51,13 +54,26 @@ function AIGuide() {
         },
         body: JSON.stringify({
           question: trimmedQuestion
-        })
+        }),
+        signal: controller.signal
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type") || "";
+      const parsed = contentType.includes("application/json")
+        ? await response.json()
+        : null;
+      const data = parsed && typeof parsed === "object" ? parsed : {};
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || "Unable to get a response.");
+        throw new Error(
+          typeof data.error === "string"
+            ? data.error
+            : `The AI service returned HTTP ${response.status}. Please try again later.`
+        );
+      }
+
+      if (typeof data.answer !== "string" || !data.answer.trim()) {
+        throw new Error("The AI Guide returned an empty answer. Please try again.");
       }
 
       setAnswer(data.answer);
@@ -66,10 +82,15 @@ function AIGuide() {
     } catch (err) {
       console.error("AI Guide request failed:", err);
 
-      setError(
-        "The AI Guide could not respond right now. Make sure the backend server is running."
-      );
+      if (err?.name === "AbortError") {
+        setError("The AI Guide took too long to respond. Please try again.");
+      } else if (err instanceof Error && err.message && err.message !== "Failed to fetch") {
+        setError(err.message);
+      } else {
+        setError("The AI Guide is currently unreachable. Please check the API deployment and try again.");
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       setLoading(false);
     }
   };
@@ -110,7 +131,7 @@ function AIGuide() {
               <h2>What would you like to discover?</h2>
             </div>
 
-            <span className="ai-status">
+            <span className="ai-status" role="status" aria-live="polite">
               <i></i>
               {loading ? "THINKING..." : "READY FOR YOUR QUESTION"}
             </span>
@@ -124,7 +145,7 @@ function AIGuide() {
                 setError("");
               }}
               onKeyDown={(event) => {
-                if (event.key === "Enter" && !event.shiftKey) {
+                if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
                   event.preventDefault();
                   askGuide();
                 }
@@ -148,13 +169,13 @@ function AIGuide() {
           </div>
 
           {error && (
-            <div className="ai-error-message">
+            <div className="ai-error-message" role="alert" aria-live="polite">
               {error}
             </div>
           )}
 
           {answer && (
-            <div className="ai-answer">
+            <div className="ai-answer" aria-live="polite">
               <div className="ai-answer-heading">
                 <span>✦</span>
                 <div>

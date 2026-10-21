@@ -115,6 +115,13 @@ const collections = {
   }
 };
 
+function normalizeSearchText(value) {
+  return String(value ?? "")
+    .normalize("NFKD")
+    .replace(/[\\u0300-\\u036f]/g, "")
+    .toLocaleLowerCase();
+}
+
 function searchableText(item) {
   return [
     item.name,
@@ -134,8 +141,12 @@ function searchableText(item) {
     item.alternateNames
   ]
     .filter(Boolean)
+    .flatMap((value) => Array.isArray(value) ? value : [value])
+    .filter((value) => typeof value === "string" || typeof value === "number")
     .join(" ")
-    .toLowerCase();
+    .normalize("NFKD")
+    .replace(/[\\u0300-\\u036f]/g, "")
+    .toLocaleLowerCase();
 }
 
 function Explore() {
@@ -152,7 +163,7 @@ function Explore() {
   }, []);
 
   const filteredData = useMemo(() => {
-    const term = search.trim().toLowerCase();
+    const term = normalizeSearchText(search.trim());
 
     return Object.fromEntries(
       Object.entries(allData).map(([key, items]) => [
@@ -341,7 +352,7 @@ function Explore() {
                     <div className="culture-grid">
                       {items.map((item) => (
                         <CultureCard
-                          key={`${categoryKey}-${item.id}`}
+                          key={`${categoryKey}-${item.stateId}-${item.id}`}
                           item={item}
                           category={categoryKey}
                           config={config}
