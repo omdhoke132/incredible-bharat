@@ -21,10 +21,12 @@ function AIGuide() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [apiStatus, setApiStatus] = useState("checking");
+  const [healthCheckAttempt, setHealthCheckAttempt] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 5000);
+    // Hosted free-tier services may take several seconds to wake from sleep.
+    const timeoutId = window.setTimeout(() => controller.abort(), 20000);
     let active = true;
 
     fetch(`${API_BASE_URL}/api/health`, { signal: controller.signal })
@@ -47,7 +49,7 @@ function AIGuide() {
       window.clearTimeout(timeoutId);
       controller.abort();
     };
-  }, []);
+  }, [healthCheckAttempt]);
 
   const handleSuggestion = (text) => {
     setQuestion(text);
@@ -180,9 +182,17 @@ function AIGuide() {
           )}
 
           {apiStatus === "unavailable" && (
-            <p className="ai-connection-message" role="status">
-              We couldn't reach the AI service. The cultural collection remains available while the connection is checked by the project team.
-            </p>
+            <div className="ai-connection-message" role="status">
+              <p>We couldn't reach the AI service. The cultural collection remains available while the connection is checked by the project team.</p>
+              <button
+                type="button"
+                className="ai-connection-retry"
+                onClick={() => setHealthCheckAttempt((attempt) => attempt + 1)}
+                disabled={loading}
+              >
+                Check connection again
+              </button>
+            </div>
           )}
 
           <div className="ai-input-wrap">
