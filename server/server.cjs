@@ -149,16 +149,25 @@ async function retrieveCulture(question) {
         const name = String(item.name || item.title || "");
         const description = String(item.description || item.significance || "");
         const detailText = [
-          name, description, item.significance, item.category, item.type,
-          item.location, item.city, item.period, item.era, item.region,
+          name, description, item.significance, categoryKey, categoryLabel,
+          item.category, item.type, item.location, item.city, item.period,
+          item.era, item.region,
           ...(Array.isArray(item.tags) ? item.tags : [])
         ].filter(Boolean).join(" ").toLocaleLowerCase();
         let score = 0;
-        for (const term of terms) {
-          if (name.toLocaleLowerCase().includes(term)) score += 5;
-          else if (String(state.name).toLocaleLowerCase().includes(term)) score += 4;
-          else if (categoryLabel.toLocaleLowerCase().includes(term) || String(item.category || item.type || "").toLocaleLowerCase().includes(term)) score += 3;
-          else if (detailText.includes(term)) score += 1;
+        for (const rawTerm of terms) {
+          const term = rawTerm.endsWith("s") ? rawTerm.slice(0, -1) : rawTerm;
+          if (name.toLocaleLowerCase().includes(rawTerm) || name.toLocaleLowerCase().includes(term)) score += 5;
+          else if (String(state.name).toLocaleLowerCase().includes(rawTerm) || String(state.name).toLocaleLowerCase().includes(term)) score += 4;
+          else if (
+            categoryKey.toLocaleLowerCase().includes(rawTerm) ||
+            categoryKey.toLocaleLowerCase().includes(term) ||
+            categoryLabel.toLocaleLowerCase().includes(rawTerm) ||
+            categoryLabel.toLocaleLowerCase().includes(term) ||
+            String(item.category || item.type || "").toLocaleLowerCase().includes(rawTerm) ||
+            String(item.category || item.type || "").toLocaleLowerCase().includes(term)
+          ) score += 3;
+          else if (detailText.includes(rawTerm) || detailText.includes(term)) score += 1;
         }
         if (score > 0) {
           records.push({

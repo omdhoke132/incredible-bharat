@@ -42,7 +42,7 @@ function Hero() {
         <div className="hero-stats">
           <div className="hero-stat">
             <strong>{cultureStats.states}</strong>
-            <span>Curated States / UTs</span>
+            <span>States Covered</span>
           </div>
 
           <div className="stat-line"></div>
