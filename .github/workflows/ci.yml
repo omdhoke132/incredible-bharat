@@ -24,3 +24,5 @@ jobs:
         run: npm audit --audit-level=high
       - name: Run lint, data tests, and production build
         run: npm run check
+      - name: Verify SQL seed exporter
+        run: npm run db:export-seed
