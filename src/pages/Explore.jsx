@@ -1,5 +1,5 @@
 ﻿import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import SearchBar from "../components/SearchBar";
@@ -19,7 +19,8 @@ import {
   getAllLiterature,
   getAllKnowledgeHeritage,
   getAllInstitutions,
-  getAllLanguages
+  getAllLanguages,
+  getAllStates
 } from "../services/cultureService";
 
 const collections = {
@@ -118,7 +119,7 @@ const collections = {
 function normalizeSearchText(value) {
   return String(value ?? "")
     .normalize("NFKD")
-    .replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase();
 }
 
@@ -145,13 +146,53 @@ function searchableText(item) {
     .filter((value) => typeof value === "string" || typeof value === "number")
     .join(" ")
     .normalize("NFKD")
-    .replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase();
 }
 
 function Explore() {
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const states = useMemo(() => getAllStates(), []);
+  const requestedCategory = searchParams.get("category") || "";
+  const requestedState = searchParams.get("state") || "";
+  const [search, setSearch] = useState(() => searchParams.get("q") || "");
+  const [activeCategory, setActiveCategory] = useState(() =>
+    Object.hasOwn(collections, requestedCategory) ? requestedCategory : "all"
+  );
+  const [activeState, setActiveState] = useState(() =>
+    states.some((state) => state.id === requestedState) ? requestedState : ""
+  );
+
+  const updateSearchParam = (key, value) => {
+    setSearchParams((currentParams) => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (value) nextParams.set(key, value);
+      else nextParams.delete(key);
+      return nextParams;
+    }, { replace: true });
+  };
+
+  const changeSearch = (value) => {
+    setSearch(value);
+    updateSearchParam("q", value.trim());
+  };
+
+  const changeCategory = (category) => {
+    setActiveCategory(category);
+    updateSearchParam("category", category === "all" ? "" : category);
+  };
+
+  const changeState = (stateId) => {
+    setActiveState(stateId);
+    updateSearchParam("state", stateId);
+  };
+
+  const resetFilters = () => {
+    setSearch("");
+    setActiveCategory("all");
+    setActiveState("");
+    setSearchParams(new URLSearchParams(), { replace: true });
+  };
 
   const allData = useMemo(() => {
     return Object.fromEntries(
@@ -168,14 +209,14 @@ function Explore() {
     return Object.fromEntries(
       Object.entries(allData).map(([key, items]) => [
         key,
-        term
-          ? items.filter((item) =>
-              searchableText(item).includes(term)
-            )
-          : items
+        items.filter((item) => {
+          const matchesSearch = !term || searchableText(item).includes(term);
+          const matchesState = !activeState || item.stateId === activeState;
+          return matchesSearch && matchesState;
+        })
       ])
     );
-  }, [allData, search]);
+  }, [allData, search, activeState]);
 
   const visibleCategories =
     activeCategory === "all"
@@ -215,10 +256,26 @@ function Explore() {
 
         <section className="explore-content">
           <div className="explore-toolbar">
-            <SearchBar
-              value={search}
-              onChange={setSearch}
-            />
+            <div className="explore-search-row">
+              <SearchBar
+                value={search}
+                onChange={changeSearch}
+              />
+
+              <label className="explore-state-filter">
+                <span>Filter by state</span>
+                <select
+                  value={activeState}
+                  onChange={(event) => changeState(event.target.value)}
+                  aria-label="Filter cultural entries by state"
+                >
+                  <option value="">All currently curated states</option>
+                  {states.map((state) => (
+                    <option key={state.id} value={state.id}>{state.name}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
 
             <div className="category-filters">
               <button
@@ -228,7 +285,7 @@ function Explore() {
                     ? "filter-btn active"
                     : "filter-btn"
                 }
-                onClick={() => setActiveCategory("all")}
+                onClick={() => changeCategory("all")}
               >
                 Everything
               </button>
@@ -244,7 +301,7 @@ function Explore() {
                         : "filter-btn"
                     }
                     onClick={() =>
-                      setActiveCategory(key)
+                      changeCategory(key)
                     }
                   >
                     {config.icon} {config.label}
@@ -269,14 +326,12 @@ function Explore() {
             </div>
 
             {(hasSearch ||
-              activeCategory !== "all") && (
+              activeCategory !== "all" ||
+              activeState) && (
               <button
                 type="button"
                 className="reset-btn"
-                onClick={() => {
-                  setSearch("");
-                  setActiveCategory("all");
-                }}
+                onClick={resetFilters}
               >
                 Reset Filters ×
               </button>
@@ -298,10 +353,7 @@ function Explore() {
               <button
                 type="button"
                 className="primary-btn"
-                onClick={() => {
-                  setSearch("");
-                  setActiveCategory("all");
-                }}
+                onClick={resetFilters}
               >
                 Explore Everything
               </button>

@@ -35,7 +35,7 @@ function Navbar() {
       <div className="nav-links">
         <NavLink to="/" end className={linkClass}>Home</NavLink>
         <NavLink to="/explore" className={linkClass}>Explore India</NavLink>
-        <button type="button" className="nav-section-link" onClick={() => goToSection("heritage")}>
+        <button type="button" className="nav-section-link" onClick={() => goToSection("state-explorer")}>
           Heritage
         </button>
         <NavLink to="/ai-guide" className={linkClass}>AI Guide</NavLink>
@@ -60,7 +60,7 @@ function Navbar() {
         <div className="mobile-nav-panel" id="mobile-navigation">
           <NavLink to="/" end className={linkClass} onClick={closeMenu}>Home</NavLink>
           <NavLink to="/explore" className={linkClass} onClick={closeMenu}>Explore India</NavLink>
-          <button type="button" onClick={() => goToSection("heritage")}>Heritage</button>
+          <button type="button" onClick={() => goToSection("state-explorer")}>Heritage</button>
           <NavLink to="/ai-guide" className={linkClass} onClick={closeMenu}>AI Guide</NavLink>
         </div>
       )}

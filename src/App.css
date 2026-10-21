@@ -5195,3 +5195,48 @@ body{background:#fff8ee;color:#281c18}.navbar{background:rgba(255,248,238,.94)}.
     transition: none;
   }
 }
+
+
+/* Region filter and query controls */
+.explore-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.34fr);
+  align-items: end;
+  gap: 14px;
+}
+
+.explore-state-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  color: #685042;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.explore-state-filter select {
+  width: 100%;
+  min-height: 58px;
+  padding: 0 14px;
+  border: 1px solid #d9c2a8;
+  border-radius: 14px;
+  background: #fffaf3;
+  color: #30231c;
+  font: inherit;
+}
+
+.explore-state-filter select:focus-visible {
+  outline: 3px solid #167c7e;
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .explore-search-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .explore-state-filter {
+    width: 100%;
+  }
+}

@@ -64,7 +64,7 @@ function StateExplorer() {
   );
 
   return (
-    <section className="state-explorer">
+    <section className="state-explorer" id="state-explorer">
       <div className="state-explorer-heading">
         <div>
           <p className="eyebrow">EXPLORE BY REGION</p>
@@ -89,7 +89,7 @@ function StateExplorer() {
         <aside className="state-selector">
           <div className="state-selector-label">
             <span>Choose a state</span>
-            <strong>{states.length} regions</strong>
+            <strong>{states.length} states</strong>
           </div>
 
           <div className="state-list">
@@ -218,7 +218,7 @@ function StateExplorer() {
 
               {selectedItems.length > 8 && (
                 <Link
-                  to="/explore"
+                  to={`/explore?category=${encodeURIComponent(activeCategory)}&state=${encodeURIComponent(activeState.id)}`}
                   className="state-see-more"
                 >
                   Explore all {selectedItems.length}{" "}
