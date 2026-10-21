@@ -46,6 +46,18 @@ npm run start:server
 
 Add your own Gemini API key to the local `.env` file as `GEMINI_API_KEY`. Never commit a real key. The AI Guide returns a configuration error when the key has not been set; the rest of the cultural atlas can still be explored.
 
+## Local SQL demo (migration in progress)
+
+The `feature/supabase-postgres-migration` branch introduces a PostgreSQL schema for state metadata, cultural records, source references, and links between them. It also adds an exporter to generate SQL inserts from the existing state datasets:
+
+```bash
+npm run db:export-seed
+```
+
+This creates `supabase/seed.generated.sql` for loading the current data into a local PostgreSQL database. Follow [docs/local-sql-demo.md](docs/local-sql-demo.md) for PostgreSQL and DBeaver setup.
+
+**Migration status:** this stage makes the schema and data import inspectable in SQL. The current React service still reads the JavaScript datasets; switching the running website to query PostgreSQL is a separate follow-up and must be completed and tested before describing the deployed website as SQL-backed.
+
 ## Environment variables
 
 | Variable | Purpose |
@@ -67,9 +79,10 @@ Run the same checks locally that CI runs:
 
 ```bash
 npm run check
+npm run db:export-seed
 ```
 
-The command runs ESLint, the cultural dataset tests, and the Vite production build. The GitHub Actions workflow runs these checks for pushes to `main` and `feature/**` and for pull requests to `main`.
+The first command runs ESLint, the cultural dataset tests, and the Vite production build. The second command verifies/generates the SQL seed. The GitHub Actions workflow runs these checks for pushes to `main` and `feature/**` and for pull requests to `main`.
 
 ## Deployment outline
 
