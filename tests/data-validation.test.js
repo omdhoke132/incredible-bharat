@@ -3,6 +3,7 @@ import test from "node:test";
 import states from "../src/data/states/index.js";
 import {
   getAllHeritage,
+  getAllArts,
   getAllTraditions,
   getAllFestivals,
   getAllArts,
@@ -20,7 +21,8 @@ import {
   getCultureItemById,
   getCultureStats,
   getStateSources,
-  getUNESCOHeritage
+  getUNESCOHeritage,
+  searchCulture
 } from "../src/services/cultureService.js";
 
 const collections = {
@@ -109,4 +111,17 @@ test("collection statistics match the available service categories", () => {
     assert.ok(Number.isInteger(stats[category] ?? stats[category + "Sites"] ?? stats.heritageSites), "statistics should expose numeric totals");
     assert.ok(getter().length >= 0);
   }
+});
+
+
+test("search is case-insensitive, accent-insensitive, and includes record names", () => {
+  const sample = getAllArts()[0];
+  assert.ok(sample, "at least one arts entry should exist");
+
+  const accentedQuery = sample.name[0] + "\u0301" + sample.name.slice(1);
+  const results = searchCulture(accentedQuery);
+  assert.ok(
+    results.arts.some((item) => item.id === sample.id && item.stateId === sample.stateId),
+    "search should find a record when case or diacritics differ"
+  );
 });

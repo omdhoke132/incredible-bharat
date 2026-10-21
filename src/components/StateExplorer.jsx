@@ -326,6 +326,8 @@ function getItemIcon(category) {
     instruments: "🥁",
     cuisine: "🍛",
     communities: "👥",
+    institutions: "🏫",
+    languages: "🗣️",
     culturalPlaces: "📍",
     literature: "📖",
     knowledgeHeritage: "🧠"

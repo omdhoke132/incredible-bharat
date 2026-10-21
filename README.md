@@ -10,7 +10,7 @@ Incredible Bharat is a web-based cultural atlas for exploring Indian heritage an
 
 - State-by-state browsing across the ten currently included state datasets.
 - Cultural collections for heritage, festivals, traditions, arts, crafts, textiles, music, instruments, cuisine, communities, cultural places, institutions, languages, literature, and traditional knowledge.
-- Search, category filters, result counts, and heritage detail pages.
+- Search, category filters, state-level filtering, shareable state/category filter URLs, result counts, and heritage detail pages.
 - Dedicated detail pages for non-monument cultural records.
 - Regional reference directories surfaced from the underlying data.
 - An AI Guide API that retrieves matching collection entries before generating an answer.

@@ -28,6 +28,13 @@ function normalize(value) {
   return String(value ?? "").trim().toLocaleLowerCase();
 }
 
+function normalizeSearchText(value) {
+  return String(value ?? "")
+    .normalize("NFKD")
+    .replace(/[\\u0300-\\u036f]/g, "")
+    .toLocaleLowerCase();
+}
+
 function slugify(value) {
   return normalize(value)
     .normalize("NFKD")
@@ -282,17 +289,17 @@ export function getCultureItemById(categoryKey, id, stateId) {
 }
 
 function searchableText(item) {
-  return [
+  return normalizeSearchText([
     item.name, item.state, item.stateId, item.region, item.location, item.city,
     item.category, item.categoryKey, item.categoryLabel, item.type, item.period,
     item.era, item.unesco, item.description, item.significance,
     ...(Array.isArray(item.tags) ? item.tags : []),
     ...(Array.isArray(item.alternateNames) ? item.alternateNames : [])
-  ].filter(Boolean).join(" ").toLocaleLowerCase();
+  ].filter(Boolean).join(" "));
 }
 
 export function searchCulture(query) {
-  const term = normalize(query);
+  const term = normalizeSearchText(query);
   const result = {};
   for (const key of CATEGORY_KEYS) {
     result[key] = getAll(key).filter((item) => searchableText(item).includes(term));
