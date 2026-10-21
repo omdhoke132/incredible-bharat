@@ -26,10 +26,10 @@ function Navbar() {
     <nav className="navbar" aria-label="Main navigation">
       <Link to="/" className="logo" aria-label="Incredible Bharat home" onClick={closeMenu}>
         <span className="logo-mark">IN</span>
-        <span className="logo-copy">
+        <div className="logo-copy">
           <strong>Incredible Bharat</strong>
           <small>Living Cultural Atlas</small>
-        </span>
+        </div>
       </Link>
 
       <div className="nav-links">
