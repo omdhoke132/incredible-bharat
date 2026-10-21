@@ -6,7 +6,6 @@ import {
   getAllArts,
   getAllTraditions,
   getAllFestivals,
-  getAllArts,
   getAllCrafts,
   getAllTextiles,
   getAllMusic,
