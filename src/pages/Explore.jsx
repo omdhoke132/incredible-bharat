@@ -1,5 +1,7 @@
 ﻿import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import SearchBar from "../components/SearchBar";
 import HeritageCard from "../components/HeritageCard";
 import {
@@ -15,7 +17,9 @@ import {
   getAllCommunities,
   getAllCulturalPlaces,
   getAllLiterature,
-  getAllKnowledgeHeritage
+  getAllKnowledgeHeritage,
+  getAllInstitutions,
+  getAllLanguages
 } from "../services/cultureService";
 
 const collections = {
@@ -96,6 +100,18 @@ const collections = {
     eyebrow: "KNOWLEDGE HERITAGE",
     icon: "🧠",
     getter: getAllKnowledgeHeritage
+  },
+  institutions: {
+    label: "Institutions",
+    eyebrow: "CULTURAL INSTITUTIONS",
+    icon: "🏫",
+    getter: getAllInstitutions
+  },
+  languages: {
+    label: "Languages",
+    eyebrow: "LANGUAGES & ORAL HERITAGE",
+    icon: "🗣️",
+    getter: getAllLanguages
   }
 };
 
@@ -112,7 +128,10 @@ function searchableText(item) {
     item.period,
     item.unesco,
     item.description,
-    item.significance
+    item.significance,
+    item.era,
+    item.tags,
+    item.alternateNames
   ]
     .filter(Boolean)
     .join(" ")
@@ -131,15 +150,6 @@ function Explore() {
       ])
     );
   }, []);
-
-  const categoryCounts = useMemo(() => {
-    return Object.fromEntries(
-      Object.entries(allData).map(([key, items]) => [
-        key,
-        items.length
-      ])
-    );
-  }, [allData]);
 
   const filteredData = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -322,7 +332,7 @@ function Explore() {
                     <div className="heritage-grid">
                       {items.map((item) => (
                         <HeritageCard
-                          key={`${categoryKey}-${item.id}`}
+                          key={`${categoryKey}-${item.stateId}-${item.id}`}
                           heritage={item}
                         />
                       ))}
@@ -345,6 +355,7 @@ function Explore() {
           )}
         </section>
       </main>
+      <Footer />
     </>
   );
 }
@@ -368,7 +379,7 @@ function CultureCard({
       : item.region || item.city || "";
 
   return (
-    <article className="culture-card">
+    <Link to={`/culture/${category}/${item.stateId}/${encodeURIComponent(item.id)}`} className="culture-card culture-card-link">
       <div className="culture-card-top">
         <span className="culture-icon">
           {config.icon}
@@ -398,7 +409,7 @@ function CultureCard({
           </div>
         )}
       </div>
-    </article>
+    </Link>
   );
 }
 

@@ -1,6 +1,9 @@
 ﻿import { Link } from "react-router-dom";
+import { getCultureStats } from "../services/cultureService";
 
 function Hero() {
+  const cultureStats = getCultureStats();
+
   return (
     <section className="hero" id="home">
       <div className="hero-content">
@@ -38,15 +41,15 @@ function Hero() {
 
         <div className="hero-stats">
           <div className="hero-stat">
-            <strong>10</strong>
-            <span>Curated States</span>
+            <strong>{cultureStats.states}</strong>
+            <span>Curated States / UTs</span>
           </div>
 
           <div className="stat-line"></div>
 
           <div className="hero-stat">
-            <strong>13</strong>
-            <span>Cultural Dimensions</span>
+            <strong>{cultureStats.categoryCount}</strong>
+            <span>Content Categories</span>
           </div>
 
           <div className="stat-line"></div>

@@ -12,8 +12,12 @@ const CATEGORY_CONFIG = [
   { key: "arts", title: "Arts", icon: "🎨", label: "ARTS" },
   { key: "crafts", title: "Crafts", icon: "🧵", label: "CRAFTS" },
   { key: "music", title: "Music", icon: "🎶", label: "MUSIC" },
+  { key: "instruments", title: "Instruments", icon: "🥁", label: "INSTRUMENTS" },
+  { key: "textiles", title: "Textiles", icon: "🧶", label: "TEXTILES" },
   { key: "cuisine", title: "Cuisine", icon: "🍛", label: "CUISINE" },
   { key: "communities", title: "Communities", icon: "👥", label: "COMMUNITIES" },
+  { key: "institutions", title: "Institutions", icon: "🏫", label: "INSTITUTIONS" },
+  { key: "languages", title: "Languages", icon: "🗣️", label: "LANGUAGES" },
   { key: "culturalPlaces", title: "Cultural Places", icon: "📍", label: "PLACES" },
   { key: "literature", title: "Literature", icon: "📖", label: "LITERATURE" },
   {
@@ -204,7 +208,7 @@ function StateExplorer() {
                     .slice(0, 8)
                     .map((item) => (
                       <CultureItem
-                        key={`$($category.key)-$($item.stateId)-$($item.id)`}
+                        key={`${activeCategory}-${item.stateId}-${item.id}`}
                         item={item}
                         category={activeCategory}
                       />
@@ -259,6 +263,9 @@ function StateExplorer() {
 }
 
 function CultureItem({ item, category }) {
+  const destination = category === "heritage"
+    ? `/heritage/${encodeURIComponent(item.id)}`
+    : `/culture/${category}/${item.stateId}/${encodeURIComponent(item.id)}`;
   const secondaryText =
     item.category ||
     item.type ||
@@ -273,7 +280,7 @@ function CultureItem({ item, category }) {
       : item.period || "";
 
   return (
-    <div className="state-culture-item">
+    <Link to={destination} className="state-culture-item">
       <div className="state-culture-item-icon">
         {getItemIcon(category)}
       </div>
@@ -289,7 +296,8 @@ function CultureItem({ item, category }) {
           <span>{extraText}</span>
         )}
       </div>
-    </div>
+      <span aria-hidden="true" className="state-culture-item-arrow">→</span>
+    </Link>
   );
 }
 
@@ -314,6 +322,7 @@ function getItemIcon(category) {
     arts: "🎨",
     crafts: "🧵",
     music: "🎶",
+    textiles: "🧶",
     instruments: "🥁",
     cuisine: "🍛",
     communities: "👥",
