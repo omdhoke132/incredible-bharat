@@ -574,8 +574,9 @@ body,
   }
 
   .bh-hero-visual {
-    width: min(78vw, 290px);
-    max-width: 290px;
+    width: min(70vw, 240px);
+    max-width: 240px;
+    margin-bottom: 12px;
   }
 
   .bh-stats,
