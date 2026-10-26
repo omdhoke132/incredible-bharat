@@ -112,8 +112,10 @@ function Typewriter() {
     else if (!deleting) timeout = setTimeout(() => setDeleting(true), 2200);
     else if (length > 0) timeout = setTimeout(() => setLength(length - 1), 16);
     else {
-      setDeleting(false);
-      setQuestionIndex((questionIndex + 1) % questions.length);
+      timeout = setTimeout(() => {
+        setDeleting(false);
+        setQuestionIndex((questionIndex + 1) % questions.length);
+      }, 0);
     }
     return () => clearTimeout(timeout);
   }, [inView, reducedMotion, length, deleting, question, questionIndex]);
