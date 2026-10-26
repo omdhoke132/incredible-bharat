@@ -54,13 +54,10 @@ function useInView(options = { threshold: 0.3 }) {
 
 function CountUp({ value, duration = 1600 }) {
   const [ref, inView] = useInView({ threshold: 0.6 });
+  const reducedMotion = prefersReducedMotion();
   const [display, setDisplay] = useState(0);
   useEffect(() => {
-    if (!inView) return undefined;
-    if (prefersReducedMotion()) {
-      setDisplay(value);
-      return undefined;
-    }
+    if (!inView || reducedMotion) return undefined;
     let frame = 0;
     const start = performance.now();
     const tick = (now) => {
@@ -70,8 +67,8 @@ function CountUp({ value, duration = 1600 }) {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [inView, value, duration]);
-  return <span ref={ref}>{display}</span>;
+  }, [inView, value, duration, reducedMotion]);
+  return <span ref={ref}>{reducedMotion ? value : display}</span>;
 }
 
 function SplitText({ text, delay = 0, className = "" }) {
@@ -102,17 +99,14 @@ function WordCycle() {
 
 function Typewriter() {
   const [ref, inView] = useInView({ threshold: 0.4 });
+  const reducedMotion = prefersReducedMotion();
   const [questionIndex, setQuestionIndex] = useState(0);
   const [length, setLength] = useState(0);
   const [deleting, setDeleting] = useState(false);
   const question = questions[questionIndex];
 
   useEffect(() => {
-    if (!inView) return undefined;
-    if (prefersReducedMotion()) {
-      setLength(question.length);
-      return undefined;
-    }
+    if (!inView || reducedMotion) return undefined;
     let timeout;
     if (!deleting && length < question.length) timeout = setTimeout(() => setLength(length + 1), 38);
     else if (!deleting) timeout = setTimeout(() => setDeleting(true), 2200);
@@ -122,11 +116,12 @@ function Typewriter() {
       setQuestionIndex((questionIndex + 1) % questions.length);
     }
     return () => clearTimeout(timeout);
-  }, [inView, length, deleting, question, questionIndex]);
+  }, [inView, reducedMotion, length, deleting, question, questionIndex]);
 
   return (
     <p ref={ref} className="typewriter" aria-label={question}>
-      <span aria-hidden="true">{question.slice(0, length)}</span><i className="caret" aria-hidden="true" />
+      <span aria-hidden="true">{reducedMotion ? question : question.slice(0, length)}</span>
+      {!reducedMotion && <i className="caret" aria-hidden="true" />}
     </p>
   );
 }
