@@ -160,7 +160,6 @@ function AIGuide() {
                     style={{
                       "--orbit-angle": angle + "deg",
                       "--orbit-counter-angle": (-angle) + "deg",
-                      "--orbit-radius": "145px",
                       "--orbit-delay": (-index * 2.6) + "s"
                     }}
                   >
