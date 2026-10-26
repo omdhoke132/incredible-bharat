@@ -472,7 +472,10 @@ export default function Home() {
         <div className="bh-hero-visual" role="img" aria-label="The Sanskrit Om symbol surrounded by a mandala">
           <Mandala />
           <div className="bh-om-aura" aria-hidden="true" />
-          <span className="bh-om-mark" aria-hidden="true">ॐ</span>
+          <svg className="bh-om-svg" viewBox="0 0 320 260" aria-hidden="true" focusable="false">
+            <text className="bh-om-outline" x="160" y="166" textAnchor="middle">ॐ</text>
+            <text className="bh-om-fill" x="160" y="166" textAnchor="middle">ॐ</text>
+          </svg>
         </div>
 
         <a href="#marquee" className="bh-scroll-cue"><span />Scroll</a>
