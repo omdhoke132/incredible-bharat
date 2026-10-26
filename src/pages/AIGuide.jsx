@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import indiaMap from "../data/india-map-paths.json";
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
 
@@ -168,35 +169,24 @@ function AIGuide() {
                 );
               })}
             </div>
-            <svg className="ai-india-map" viewBox="0 0 300 330" aria-hidden="true" focusable="false">
+            <svg className="ai-india-map" viewBox={indiaMap.viewBox} role="presentation" aria-hidden="true" focusable="false">
               <defs>
                 <linearGradient id="ai-india-fill" x1="0" y1="0" x2="1" y2="1">
                   <stop offset="0%" stopColor="#f0bd66" />
                   <stop offset="48%" stopColor="#d9772b" />
                   <stop offset="100%" stopColor="#7a2318" />
                 </linearGradient>
-                <clipPath id="ai-india-clip">
-                  <path d="M69 24 91 16 113 25 133 20 153 29 174 25 192 37 209 42 220 53 237 52 253 61 266 74 254 84 238 81 228 91 214 96 208 110 194 122 189 143 180 161 173 183 164 205 157 228 145 253 135 275 124 302 115 285 106 262 96 242 84 222 72 207 61 190 51 174 45 155 49 138 44 126 53 111 60 96 56 82 64 71 59 60 66 48 60 36Z" />
-                </clipPath>
               </defs>
-              <path
-                className="ai-india-map-shadow"
-                d="M69 24 91 16 113 25 133 20 153 29 174 25 192 37 209 42 220 53 237 52 253 61 266 74 254 84 238 81 228 91 214 96 208 110 194 122 189 143 180 161 173 183 164 205 157 228 145 253 135 275 124 302 115 285 106 262 96 242 84 222 72 207 61 190 51 174 45 155 49 138 44 126 53 111 60 96 56 82 64 71 59 60 66 48 60 36Z"
-                transform="translate(0 3)"
-              />
-              <path
-                className="ai-india-map-shape"
-                d="M69 24 91 16 113 25 133 20 153 29 174 25 192 37 209 42 220 53 237 52 253 61 266 74 254 84 238 81 228 91 214 96 208 110 194 122 189 143 180 161 173 183 164 205 157 228 145 253 135 275 124 302 115 285 106 262 96 242 84 222 72 207 61 190 51 174 45 155 49 138 44 126 53 111 60 96 56 82 64 71 59 60 66 48 60 36Z"
-              />
-              <g className="ai-india-map-detail" clipPath="url(#ai-india-clip)">
-                <path d="M74 69 106 79 135 72 160 83 187 72 216 79" />
-                <path d="M54 125 90 135 124 121 149 137 185 125 211 133" />
-                <path d="M67 174 101 164 129 181 163 168 188 180" />
-                <path d="M91 216 116 205 145 220 168 207" />
-                <path d="M116 261 136 249 153 254" />
+              <g className="ai-india-map-states">
+                {indiaMap.states.map((state) => (
+                  <path
+                    key={state.id}
+                    className="ai-india-map-shape"
+                    d={state.d}
+                    aria-label={state.name}
+                  />
+                ))}
               </g>
-              <circle className="ai-india-island" cx="82" cy="311" r="3" />
-              <circle className="ai-india-island" cx="88" cy="318" r="1.8" />
             </svg>
             <span className="ai-map-caption" aria-hidden="true">ONE LAND · MANY VOICES</span>
           </div>
