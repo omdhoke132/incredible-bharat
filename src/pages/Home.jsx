@@ -12,9 +12,6 @@ import {
   getUNESCOHeritage
 } from "../services/cultureService";
 
-const HERO_IMAGE = "/images/hero/taj-mahal.jpg";
-const heroSrc = (width) => `/.netlify/images?url=${encodeURIComponent(HERO_IMAGE)}&w=${width}&fm=webp&q=78`;
-
 const cycleWords = ["carved in stone.", "danced at dusk.", "woven by hand.", "sung at dawn.", "served with love."];
 
 const chapters = [
@@ -472,23 +469,10 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="bh-hero-visual" aria-hidden="true">
+        <div className="bh-hero-visual" role="img" aria-label="The Sanskrit Om symbol surrounded by a mandala">
           <Mandala />
-          <div className="bh-arch">
-            <img
-              src={heroSrc(900)}
-              srcSet={`${heroSrc(600)} 600w, ${heroSrc(900)} 900w, ${heroSrc(1300)} 1300w`}
-              sizes="(max-width: 860px) 80vw, 34vw"
-              alt=""
-              fetchPriority="high"
-              onError={(event) => {
-                if (event.currentTarget.src.endsWith(HERO_IMAGE)) return;
-                event.currentTarget.removeAttribute("srcset");
-                event.currentTarget.src = HERO_IMAGE;
-              }}
-            />
-          </div>
-          <div className="bh-orbit"><span>Taj Mahal · Agra · 1632–1653 · Taj Mahal · Agra · 1632–1653 ·</span></div>
+          <div className="bh-om-aura" aria-hidden="true" />
+          <span className="bh-om-mark" aria-hidden="true">ॐ</span>
         </div>
 
         <a href="#marquee" className="bh-scroll-cue"><span />Scroll</a>
