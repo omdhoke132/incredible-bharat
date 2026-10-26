@@ -7,6 +7,73 @@ import indiaMap from "../data/india-map-paths.json";
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
 
+function splitMarkdownTableRow(line) {
+  const source = String(line || "").trim().replace(/^\|/, "").replace(/\|$/, "");
+  const cells = [];
+  let cell = "";
+  let escaped = false;
+
+  for (const character of source) {
+    if (character === "|" && !escaped) {
+      cells.push(cell.trim());
+      cell = "";
+      continue;
+    }
+    cell += character;
+    if (character === "\\" && !escaped) escaped = true;
+    else escaped = false;
+  }
+
+  cells.push(cell.trim());
+  return cells;
+}
+
+function isMarkdownTableSeparator(line) {
+  const cells = splitMarkdownTableRow(line);
+  return cells.length > 1 && cells.every((cell) => /^:?-{3,}:?$/.test(cell.replace(/\s/g, "")));
+}
+
+function splitAnswerIntoBlocks(markdown) {
+  const lines = String(markdown || "").split(/\r?\n/);
+  const blocks = [];
+  let prose = [];
+
+  const flushProse = () => {
+    if (prose.length) {
+      const content = prose.join("\n").trim();
+      if (content) blocks.push({ type: "markdown", content });
+      prose = [];
+    }
+  };
+
+  for (let index = 0; index < lines.length;) {
+    if (
+      lines[index].includes("|") &&
+      index + 1 < lines.length &&
+      isMarkdownTableSeparator(lines[index + 1])
+    ) {
+      flushProse();
+      const headers = splitMarkdownTableRow(lines[index]);
+      index += 2;
+      const rows = [];
+
+      while (index < lines.length && lines[index].trim() && lines[index].includes("|")) {
+        rows.push(splitMarkdownTableRow(lines[index]));
+        index += 1;
+      }
+
+      blocks.push({ type: "table", headers, rows });
+      continue;
+    }
+
+    prose.push(lines[index]);
+    index += 1;
+  }
+
+  flushProse();
+  return blocks;
+}
+
 const suggestions = [
   "Tell me about Maharashtra's cultural heritage",
   "Which Indian festivals should I explore?",
@@ -281,7 +348,44 @@ function AIGuide() {
               </div>
 
               <div className="ai-answer-text">
-                <ReactMarkdown>{answer}</ReactMarkdown>
+                {splitAnswerIntoBlocks(answer).map((block, blockIndex) => (
+                  block.type === "table" ? (
+                    <div
+                      className="ai-markdown-table-wrap"
+                      key={blockIndex}
+                      role="region"
+                      aria-label="Scrollable answer table"
+                      tabIndex={0}
+                    >
+                      <table className="ai-markdown-table">
+                        <thead>
+                          <tr>
+                            {block.headers.map((cell, cellIndex) => (
+                              <th key={cellIndex} scope="col">
+                                <ReactMarkdown components={{ p: ({ children }) => <>{children}</> }}>{cell}</ReactMarkdown>
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {block.rows.map((row, rowIndex) => (
+                            <tr key={rowIndex}>
+                              {block.headers.map((_, cellIndex) => (
+                                <td key={cellIndex}>
+                                  <ReactMarkdown components={{ p: ({ children }) => <>{children}</> }}>
+                                    {row[cellIndex] || ""}
+                                  </ReactMarkdown>
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <ReactMarkdown key={blockIndex}>{block.content}</ReactMarkdown>
+                  )
+                ))}
               </div>
             </div>
           )}
