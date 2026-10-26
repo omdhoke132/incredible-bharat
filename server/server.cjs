@@ -37,7 +37,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type"],
   maxAge: 600
 }));
-app.use(express.json({ limit: "10kb", strict: true }));
+app.use(express.json({ limit: "10kb", strict: true, inflate: false }));
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const aiConfigured = Boolean(GROQ_API_KEY);
