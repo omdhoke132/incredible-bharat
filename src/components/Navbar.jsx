@@ -5,7 +5,7 @@ const links = [
   { to: "/", label: "Home", end: true },
   { to: "/explore", label: "Explore India" },
   { section: "state-explorer", label: "States" },
-  { to: "/ai-guide", label: "AI Guide" }
+  { to: "/ai-guide", label: "Bharat AI" }
 ];
 
 function Navbar() {
