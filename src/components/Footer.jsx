@@ -17,7 +17,7 @@ export default function Footer() {
         <Link to="/explore">The collections</Link>
         <Link to="/explore?category=heritage">Heritage</Link>
         <Link to="/explore?category=festivals">Festivals</Link>
-        <Link to="/ai-guide">Cultural guide</Link>
+        <Link to="/ai-guide">Bharat AI</Link>
       </nav>
     </div>
     <div className="bh-footer-word" aria-hidden="true">Bharat</div>
