@@ -465,7 +465,7 @@ export default function Home() {
           </form>
           <div className="bh-hero-actions bh-rise" style={{ "--d": "1650ms" }}>
             <Link to="/explore" className="bh-btn">Open the atlas <span aria-hidden="true">↗</span></Link>
-            <Link to="/ai-guide" className="bh-btn bh-btn-ghost">Ask the guide</Link>
+            <Link to="/ai-guide" className="bh-btn bh-btn-ghost">Ask Bharat AI</Link>
           </div>
         </div>
 
@@ -532,7 +532,7 @@ export default function Home() {
             <span className="bh-guide-quote" aria-hidden="true">“</span>
             <Typewriter />
           </div>
-          <Link to="/ai-guide" className="bh-btn">Meet your cultural guide <span aria-hidden="true">↗</span></Link>
+          <Link to="/ai-guide" className="bh-btn">Meet Bharat AI <span aria-hidden="true">↗</span></Link>
         </div>
       </section>
     </main>
