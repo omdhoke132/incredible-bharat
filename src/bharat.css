@@ -635,3 +635,149 @@ body,
     padding: 16px;
   }
 }
+
+
+/* Bharat AI identity: an India silhouette with continuously orbiting language labels. */
+.ai-bharat-orbit {
+  isolation: isolate;
+  overflow: visible;
+  --orbit-radius: 126px;
+}
+
+.ai-bharat-orbit .ai-language-orbit {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: 50%;
+  animation: aiRotate 34s linear infinite;
+  pointer-events: none;
+}
+
+.ai-bharat-orbit .ai-language-pill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 9px;
+  border: 1px solid rgba(22, 124, 126, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 248, 238, 0.94);
+  box-shadow: 0 4px 16px rgba(48, 33, 25, 0.09);
+  color: #4b3428;
+  font-family: "Bricolage Grotesque", "Noto Sans Devanagari", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  transform:
+    translate(-50%, -50%)
+    rotate(var(--orbit-angle))
+    translateY(calc(0px - var(--orbit-radius)))
+    rotate(var(--orbit-counter-angle));
+}
+
+.ai-bharat-orbit .ai-language-text {
+  display: block;
+  animation: aiLanguageCounterSpin 34s linear infinite;
+  transform-origin: center;
+}
+
+.ai-bharat-orbit .ai-orb-ring-one {
+  border-color: rgba(22, 124, 126, 0.27);
+}
+
+.ai-bharat-orbit .ai-orb-ring-two {
+  border-color: rgba(217, 119, 43, 0.34);
+}
+
+.ai-bharat-orbit .ai-orb-ring-one::before,
+.ai-bharat-orbit .ai-orb-ring-two::before {
+  background: #d9772b;
+  box-shadow: 0 0 0 7px rgba(217, 119, 43, 0.1);
+}
+
+.ai-bharat-orbit .ai-india-map {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 58%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 12px 20px rgba(122, 35, 24, 0.18));
+}
+
+.ai-bharat-orbit .ai-india-map-shadow {
+  fill: #7a2318;
+  opacity: 0.13;
+  filter: blur(5px);
+}
+
+.ai-bharat-orbit .ai-india-map-shape {
+  fill: url(#ai-india-fill);
+  stroke: #fff4db;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.ai-bharat-orbit .ai-india-map-detail {
+  fill: none;
+  stroke: rgba(255, 248, 238, 0.45);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.ai-bharat-orbit .ai-india-island {
+  fill: #d9772b;
+  stroke: #fff4db;
+  stroke-width: 1;
+}
+
+.ai-bharat-orbit .ai-map-caption {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 8%;
+  color: #7a4930;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+@keyframes aiLanguageCounterSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@media (max-width: 600px) {
+  .ai-bharat-orbit {
+    --orbit-radius: clamp(80px, 26vw, 98px);
+  }
+
+  .ai-bharat-orbit .ai-language-pill {
+    padding: 5px 7px;
+    font-size: clamp(9px, 2.8vw, 11px);
+    box-shadow: 0 3px 10px rgba(48, 33, 25, 0.08);
+  }
+
+  .ai-bharat-orbit .ai-india-map {
+    width: 58%;
+  }
+
+  .ai-bharat-orbit .ai-map-caption {
+    bottom: 3%;
+    font-size: 6.5px;
+    letter-spacing: 0.13em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-bharat-orbit .ai-language-orbit,
+  .ai-bharat-orbit .ai-language-text {
+    animation: none;
+  }
+}
