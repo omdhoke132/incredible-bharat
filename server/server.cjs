@@ -349,6 +349,12 @@ app.use((error, _req, res, next) => {
   if (error?.type === "entity.too.large") {
     return res.status(413).json({ success: false, error: "The request is too large." });
   }
+  if (error?.type === "encoding.unsupported" || error?.status === 415) {
+    return res.status(415).json({ success: false, error: "Compressed request bodies are not supported." });
+  }
+  if (error?.type === "entity.parse.failed") {
+    return res.status(400).json({ success: false, error: "The request body must be valid JSON." });
+  }
   console.error("Unhandled API error:", error?.message || "Unknown error");
   return res.status(500).json({ success: false, error: "An unexpected server error occurred." });
 });
