@@ -22,7 +22,7 @@ Incredible Bharat is a web-based cultural atlas for exploring Indian heritage an
 
 - React 19, React Router, and Vite
 - Node.js and Express for the AI API
-- Google Gemini API via `@google/genai`
+- OpenAI API (server-side; model configurable with `OPENAI_MODEL`)
 - Node's built-in test runner and ESLint
 - Netlify-compatible SPA fallback via `public/_redirects`
 
@@ -44,14 +44,14 @@ Open a second terminal in the repository and start the API:
 npm run start:server
 ```
 
-Add your own Gemini API key to the local `.env` file as `GEMINI_API_KEY`. Never commit a real key. The AI Guide returns a configuration error when the key has not been set; the rest of the cultural atlas can still be explored.
+Add your own OpenAI API key to the local `.env` file as `OPENAI_API_KEY`. Never commit a real key. The AI Guide returns a configuration error when the key has not been set; the rest of the cultural atlas can still be explored.
 
 ## Environment variables
 
 | Variable | Purpose |
 |---|---|
-| `GEMINI_API_KEY` | Secret API key used only by the backend. |
-| `GEMINI_MODEL` | Optional model override; default is `gemini-3.8-flash`. |
+| `OPENAI_API_KEY` | Secret OpenAI API key used only by the backend. |
+| `OPENAI_MODEL` | Optional model override; default is `gpt-4.1-mini`. |
 | `PORT` | API port; defaults to `3001` locally and honours a deployment platform's assigned port. |
 | `HOST` | API host; defaults to `0.0.0.0` for deployment compatibility. |
 | `FRONTEND_URL` | Main permitted frontend origin for CORS. |
@@ -79,7 +79,7 @@ Deploy the Vite application to Netlify or another static frontend host. Build co
 
 ### AI API
 
-Deploy the Node service separately on a Node-compatible host such as Render. Build/install command: `npm ci`; start command: `npm run start:server`. Set `GEMINI_API_KEY`, `GEMINI_MODEL`, `FRONTEND_URL`, and `CORS_ORIGINS` in the host's environment settings. Do not expose the key as a `VITE_*` variable or in browser code.
+Deploy the Node service separately on a Node-compatible host such as Render. Build/install command: `npm ci`; start command: `npm run start:server`. Set `OPENAI_API_KEY`, `OPENAI_MODEL`, `FRONTEND_URL`, and `CORS_ORIGINS` in the host's environment settings. Do not expose the key as a `VITE_*` variable or in browser code.
 
 After deployment, verify `/api/health` and ask a question through the live website. Health returning HTTP 200 does not itself mean the model is configured; inspect the `aiConfigured` field.
 
@@ -94,7 +94,7 @@ React pages
        └── POST /api/ask-guide
              ├── input validation and rate limit
              ├── retrieval from src/data/states/
-             ├── Gemini generation with retrieved context
+             ├── OpenAI generation with retrieved context
              └── answer + matched entries + regional reference links
 ```
 
