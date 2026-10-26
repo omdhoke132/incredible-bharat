@@ -79,7 +79,7 @@ Deploy the Vite application to Netlify or another static frontend host. Build co
 
 ### AI API
 
-Deploy the Node service separately on a Node-compatible host such as Render. Build/install command: `npm ci`; start command: `npm run start:server`. Set `GEMINI_API_KEY`, `GEMINI_MODEL`, `FRONTEND_URL`, and `CORS_ORIGINS` in the host's environment settings. Do not expose the key as a `VITE_*` variable or in browser code.
+Deploy the Node service separately on a Node-compatible host such as Render. Build/install command: `npm ci`; start command: `npm run start:server`. Set `OPENAI_API_KEY`, `OPENAI_MODEL`, `FRONTEND_URL`, and `CORS_ORIGINS` in the host's environment settings. Do not expose the key as a `VITE_*` variable or in browser code.
 
 After deployment, verify `/api/health` and ask a question through the live website. Health returning HTTP 200 does not itself mean the model is configured; inspect the `aiConfigured` field.
 
@@ -94,7 +94,7 @@ React pages
        └── POST /api/ask-guide
              ├── input validation and rate limit
              ├── retrieval from src/data/states/
-             ├── Gemini generation with retrieved context
+             ├── OpenAI generation with retrieved context
              └── answer + matched entries + regional reference links
 ```
 
